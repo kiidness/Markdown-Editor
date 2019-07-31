@@ -2,7 +2,7 @@
 
 This software is an opensource JavaFX project.
 
-![Image not found](image\screenshot.png)
+![Image not found](image/screenshot.png)
 
 
 ## Dependencies
