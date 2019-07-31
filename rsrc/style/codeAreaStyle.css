@@ -1,0 +1,67 @@
+.text {
+    -fx-fill: white;
+}
+
+.title1 {
+	-fx-fill: #81cfe0;
+	-fx-font-size: 30px;
+}
+
+.title2 {
+	-fx-fill: #81cfe0;
+	-fx-font-size: 25px;
+}
+
+.title3 {
+	-fx-fill: #81cfe0;
+	-fx-font-size: 20px;
+}
+
+.title4 {
+	-fx-fill: #81cfe0;
+	-fx-font-size: 15px;
+}
+
+.title5 {
+	-fx-fill: #81cfe0;
+	-fx-font-size: 12px;
+}
+
+.title6 {
+	-fx-fill: #81cfe0;
+	-fx-font-size: 10px;
+}
+
+.bold {
+	-fx-fill: white;
+	-fx-font-weight: bold;
+}
+
+.italic {
+    -fx-fill: #ffffcc;
+    -fx-font-style: italic;
+}
+
+.italicbold {
+    -fx-fill: #fff9de;
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
+}
+
+.boldstrikethrough {
+    -fx-fill: white;
+    -fx-font-weight: bold;
+    -fx-strikethrough: true;
+}
+
+.strikethrough {
+    -fx-strikethrough: true;
+}
+
+.styled-text-area {
+    -fx-background-color: #222222;
+}
+
+.lineno {
+ -fx-background-color: black;
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.fxmisc.richtext.CodeArea?>
+<?import javafx.scene.web.WebView?>
+<fx:root type="javafx.scene.layout.BorderPane" xmlns:fx="http://javafx.com/fxml">
+    <center>
+        <SplitPane>
+            <CodeArea fx:id="codeArea"/>
+            <WebView fx:id="webView"/>
+        </SplitPane>
+    </center>
+    <bottom>
+        <Label fx:id="selectedLineAndColLabel" BorderPane.alignment="BOTTOM_LEFT"/>
+    </bottom>
+</fx:root>

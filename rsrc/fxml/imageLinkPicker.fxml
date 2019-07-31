@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="view.ImageLinkPicker"
+
+      stylesheets="@/style/darkTheme.css"
+      spacing="5">
+    <padding>
+        <Insets left = "15" right="15" top="15" bottom="15"/>
+    </padding>
+
+    <Label fx:id="textLabel"/>
+    <TextField fx:id="textTxtField"/>
+    <Label fx:id="errorTextLabel" textFill="#fd5f5d"/>
+
+    <Label fx:id="linkLabel"/>
+    <HBox spacing="5">
+        <TextField fx:id="linkTxtField"/>
+        <Button fx:id="browseBtn" text="..." onAction="#browseImage"/>
+    </HBox>
+    <Label fx:id="errorLinkLabel" textFill="#fd5f5d"/>
+
+    <HBox spacing="20" alignment="CENTER">
+        <padding>
+            <Insets top="20"/>
+        </padding>
+        <Button fx:id="cancelBtn" onAction="#close"/>
+        <Button fx:id="addBtn" onAction="#add"/>
+    </HBox>
+</VBox>

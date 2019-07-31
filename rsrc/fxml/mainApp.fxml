@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import java.lang.Integer?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.ImageView?>
+
+<!-- Main application page, displays the Menu and the TabPane that contains all the loaded files -->
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.Label?>
+<GridPane alignment="center" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="view.MainApp" stylesheets="@/style/darkTheme.css">
+    <fx:define>
+        <Integer fx:id="btnSize" fx:value="30"/>
+        <Integer fx:id="imageSize" fx:value="20"/>
+
+        <Integer fx:id="exportImageHeight" fx:value="60"/>
+
+        <Image fx:id="btnImagePicture" url="/images/picture.png" requestedWidth="$imageSize" requestedHeight="$imageSize"/>
+        <Image fx:id="btnImageOl" url="/images/ol.png" requestedWidth="$imageSize" requestedHeight="$imageSize"/>
+        <Image fx:id="btnImageUl" url="/images/ul.png" requestedWidth="$imageSize" requestedHeight="$imageSize"/>
+        <Image fx:id="btnImageHighlight" url="/images/highlight.png" requestedWidth="$imageSize" requestedHeight="$imageSize"/>
+
+        <Image fx:id="btnImagePdf" url="/images/pdf.png" preserveRatio="true" requestedHeight="$exportImageHeight"/>
+        <Image fx:id="btnImageHtml" url="/images/html.png" preserveRatio="true" requestedHeight="$exportImageHeight"/>
+    </fx:define>
+    <rowConstraints>
+        <RowConstraints vgrow="SOMETIMES"/>
+        <RowConstraints vgrow="ALWAYS"/>
+    </rowConstraints>
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <MenuBar GridPane.rowIndex="0" GridPane.columnIndex="0">
+        <Menu fx:id="menuFile" text="📁 File">
+            <MenuItem fx:id="menuItemNewFile" text="📄📋 New File" onAction="#newFile"/>
+            <MenuItem fx:id="menuItemOpen" text="📂 _Open..." onAction="#openFile"/>
+            <!--<MenuItem fx:id="menuItemOpenRecent" text="Open recent"/>-->
+            <MenuItem fx:id="menuItemSave" text="💾 _Save" onAction="#save"/>
+            <MenuItem fx:id="menuItemSaveAs" text="💾 Save As..." onAction="#saveAs"/>
+            <MenuItem fx:id="menuItemExportAs" text="💾 Export As..." onAction="#exportAs"/>
+            <MenuItem fx:id="menuItemHelp" text="❔ _Help" onAction="#help"/>
+        </Menu>
+        <Menu fx:id="menuOptions" text="🔧 Options"/>
+    </MenuBar>
+
+    <BorderPane GridPane.rowIndex="1" GridPane.columnIndex="0">
+        <top>
+            <BorderPane>
+                <left>
+                    <HBox spacing="5">
+                        <VBox spacing="5">
+                            <HBox spacing="5">
+                                <Button fx:id="boldBtn" onAction="#bold" minWidth="$btnSize" minHeight="$btnSize" style="-fx-font-weight: bold"/>
+                                <Button fx:id="italicBtn" onAction="#italic" minWidth="$btnSize" minHeight="$btnSize" style="-fx-font-style: italic"/>
+                                <Button fx:id="strikeThroughBtn" onAction="#strikeThrough" minWidth="$btnSize" minHeight="$btnSize"/>
+                            </HBox>
+                            <HBox spacing="5">
+                                <Button onAction="#highlight" minWidth="$btnSize" minHeight="$btnSize">
+                                    <graphic>
+                                        <ImageView image="$btnImageHighlight" />
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="codeBtn" onAction="#code" minWidth="$btnSize" minHeight="$btnSize" style="-fx-font-weight: bold"/>
+                                <Button fx:id="quoteBtn" onAction="#quote" minWidth="$btnSize" minHeight="$btnSize" style="-fx-font-weight: bold"/>
+                            </HBox>
+                        </VBox>
+
+                        <Separator orientation="VERTICAL"/>
+
+                        <Button onAction="#image" minWidth="$btnSize" minHeight="$btnSize">
+                            <graphic>
+                                <ImageView image="$btnImagePicture" />
+                            </graphic>
+                        </Button>
+                        <Button onAction="#link" minWidth="$btnSize" minHeight="$btnSize"  text="⛓"/>
+                        <Button onAction="#olList" minWidth="$btnSize" minHeight="$btnSize">
+                            <graphic>
+                                <ImageView image="$btnImageOl" />
+                            </graphic>
+                        </Button>
+                        <Button onAction="#ulList" minWidth="$btnSize" minHeight="$btnSize">
+                            <graphic>
+                                <ImageView image="$btnImageUl" />
+                            </graphic>
+                        </Button>
+
+                        <Separator orientation="VERTICAL"/>
+
+                        <VBox spacing="5">
+                            <HBox spacing="5">
+                                <Button text="H1" onAction="#title" userData="1" minWidth="$btnSize" minHeight="$btnSize" style="-fx-font-weight: bold"/>
+                                <Button text="H2" onAction="#title" userData="2" minWidth="$btnSize" minHeight="$btnSize" style="-fx-font-weight: bold"/>
+                                <Button text="H3" onAction="#title" userData="3" minWidth="$btnSize" minHeight="$btnSize" style="-fx-font-weight: bold"/>
+                            </HBox>
+                            <HBox spacing="5">
+                                <Button text="H4" onAction="#title" userData="4" minWidth="$btnSize" minHeight="$btnSize" style="-fx-font-weight: bold"/>
+                                <Button text="H5" onAction="#title" userData="5" minWidth="$btnSize" minHeight="$btnSize" style="-fx-font-weight: bold"/>
+                                <Button text="H6" onAction="#title" userData="6" minWidth="$btnSize" minHeight="$btnSize" style="-fx-font-weight: bold"/>
+                            </HBox>
+                        </VBox>
+
+                        <Separator orientation="VERTICAL"/>
+                    </HBox>
+                </left>
+                <right>
+                    <HBox nodeOrientation="RIGHT_TO_LEFT" spacing="15">
+                        <ComboBox fx:id="styleComboBox"/>
+
+                        <Separator orientation="VERTICAL"/>
+
+                        <VBox spacing="5">
+                            <HBox spacing="5">
+                                <Button fx:id="exportPdfBtn" onAction="#export" userData="pdf">
+                                    <graphic>
+                                        <ImageView image="$btnImagePdf"/>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="exportHtmlBtn" onAction="#export" userData="html">
+                                    <graphic>
+                                        <ImageView image="$btnImageHtml" />
+                                    </graphic>
+                                </Button>
+                            </HBox>
+                            <Label maxWidth="Infinity" alignment="CENTER" textAlignment="CENTER">Export</Label>
+                        </VBox>
+
+                        <Separator orientation="VERTICAL"/>
+                    </HBox>
+                </right>
+                <BorderPane.margin>
+                    <Insets right="5" left="5" top="5" bottom="5" />
+                </BorderPane.margin>
+            </BorderPane>
+        </top>
+
+        <center>
+            <TabPane fx:id="filesTabPane"/>
+        </center>
+    </BorderPane>
+</GridPane>

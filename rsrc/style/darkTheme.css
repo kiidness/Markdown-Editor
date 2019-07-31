@@ -1,0 +1,40 @@
+.root {
+    -fx-base: black;
+}
+
+#strikeThroughBtn.button .text {
+    -fx-strikethrough: true;
+}
+
+.button, .combo-box {
+    -fx-background-color: #222222;
+    -fx-background-radius: 0;
+    -fx-text-fill: #ddd;
+    -fx-font-size: 14px;
+}
+
+.button:hover, .combo-box:hover {
+    -fx-background-color: #191919;
+    -fx-text-fill: #eee;
+}
+
+#exportHtmlBtn, #exportPdfBtn {
+     -fx-padding: 0px;
+     -fx-background-color: transparent;
+     -fx-opacity: 1;
+}
+
+#exportHtmlBtn:hover, #exportPdfBtn:hover {
+    -fx-opacity: 0.5;
+}
+
+.menu-bar {
+    -fx-background-color: #222222;
+    -fx-background-radius: 0;
+    -fx-text-fill: #ddd;
+    -fx-font-size: 14px;
+}
+
+.header-panel {
+    -fx-background-color: #222222;
+}
