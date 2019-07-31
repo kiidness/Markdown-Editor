@@ -65,3 +65,11 @@
 .lineno {
  -fx-background-color: black;
 }
+
+.balise {
+ -fx-fill: green;
+}
+
+.code {
+ -fx-fill: #aaffaa;
+}

@@ -1,16 +1,14 @@
 package model.utils.converters;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public abstract class MarkDownToHtmlConverter {
-    private static List<String> openWeakBalisisStack;
-    private static List<String> openStrongBalisisStack;
-    private static boolean hasComputedOneSingleLinedBalisis;
+    private static List<String> openWeakBaliseStack;
+    private static List<String> openStrongBaliseStack;
+    private static boolean hasComputedOneSingleLinedBalise;
 
     private static String currentStyle = "";
     public static void setCurrentStyle(String styleText) {
@@ -18,8 +16,8 @@ public abstract class MarkDownToHtmlConverter {
     }
 
     public static String convert(String markDownText) {
-        openWeakBalisisStack = new ArrayList<>();
-        openStrongBalisisStack = new ArrayList<>();
+        openWeakBaliseStack = new ArrayList<>();
+        openStrongBaliseStack = new ArrayList<>();
 
         var convertedText = new StringBuilder();
         convertedText.append("<html>\n<header>\n<style>");
@@ -33,49 +31,49 @@ public abstract class MarkDownToHtmlConverter {
     private static String getConvertedBodyHtml(String markDownText) {
         var convertedText = new StringBuilder();
         for (var line : markDownText.split("\n")) {
-            hasComputedOneSingleLinedBalisis = true;
+            hasComputedOneSingleLinedBalise = true;
 
-            line = computeSingleLinedBalisis(line);
-            line = computeMultiLinedStrongBalisis(line);
-            if (!hasComputedOneSingleLinedBalisis && getStrongBalisisIndex("code") == -1) {
-                line = computeParagraphBalisis(line);
+            line = computeSingleLinedBalise(line);
+            line = computeMultiLinedStrongBalise(line);
+            if (!hasComputedOneSingleLinedBalise && getStrongBaliseIndex("code") == -1) {
+                line = computeParagraphBalise(line);
                 line = line + "</br>";
             }
             line = line + "\n";
             convertedText.append(line);
         }
-        convertedText.append(closeAllCurrentWeakBalisis(""));
-        convertedText.append(closeAllCurrentStrongBalisis(""));
+        convertedText.append(closeAllCurrentWeakBalise(""));
+        convertedText.append(closeAllCurrentStrongBalise(""));
         return convertedText.toString();
     }
 
-    private static String computeMultiLinedStrongBalisis(String line) {
+    private static String computeMultiLinedStrongBalise(String line) {
         // code
-        line = computeStrongBalisis(line, "([`]{3}|[`])", "code,xmp");
+        line = computeStrongBalise(line, "([`]{3}|[`])", "code,xmp");
 
-        if (getStrongBalisisIndex("code") != -1)  {
+        if (getStrongBaliseIndex("code") != -1)  {
             return line;
         }
 
         // bold
-        line = computeStrongBalisis(line, "[*_]{2}", "strong");
+        line = computeStrongBalise(line, "[*_]{2}", "strong");
 
         // italic
-        line = computeStrongBalisis(line, "[*_]", "em");
+        line = computeStrongBalise(line, "[*_]", "em");
 
         // strikethrough
-        line = computeStrongBalisis(line, "[~]{2}", "strike");
+        line = computeStrongBalise(line, "[~]{2}", "strike");
 
         // mark
-        line = computeStrongBalisis(line, "==", "mark");
+        line = computeStrongBalise(line, "==", "mark");
 
         line = line.replaceAll("\\\\([*_~=`])", "$1");
 
         return line;
     }
 
-    private static String computeSingleLinedBalisis(String line) {
-        if (getStrongBalisisIndex("code") != -1)  {
+    private static String computeSingleLinedBalise(String line) {
+        if (getStrongBaliseIndex("code") != -1)  {
             return line;
         }
 
@@ -124,55 +122,55 @@ public abstract class MarkDownToHtmlConverter {
             var titleNum = line.replaceFirst("(^[#]{1,6})[\\s].+","$1").chars().count();
             if (titleNum < 7) {
                 line = String.format("<h%d>%s</h%d>", titleNum, line.replaceFirst("^([#]){1,6}[\\s]", ""), titleNum);
-                return closeAllCurrentWeakBalisis(line);
+                return closeAllCurrentWeakBalise(line);
             }
         }
 
         // Quotes
         if (line.matches("^[>][\\s].+")) {
             line = String.format("<blockquote>%s</blockquote>", line.replaceFirst("^>[\\s]", ""));
-            return closeAllCurrentWeakBalisis(line);
+            return closeAllCurrentWeakBalise(line);
         }
 
         // Unordered list
-        var balisis = "ul";
+        var balise = "ul";
         if (line.matches("^[-*][\\s].+")) {
             line = String.format("<li>%s</li>", line.replaceFirst("^(-|\\*)[\\s]", ""));
-            if (getWeakBalisisIndex(balisis) < 0) {
-                line = openWeakBalisis(line, balisis, true);
+            if (getWeakBaliseIndex(balise) < 0) {
+                line = openWeakBalise(line, balise, true);
             }
             return line;
         }
-        line = closeWeakBalisis(line, balisis);
+        line = closeWeakBalise(line, balise);
 
         // Ordered list
-        balisis = "ol";
+        balise = "ol";
         if (line.matches("^\\d[.][\\s].+")) {
             line = String.format("<li>%s</li>", line.replaceFirst("^\\d[.][\\s]", ""));
-            if (getWeakBalisisIndex(balisis) < 0) {
-                line = openWeakBalisis(line, balisis, true);
+            if (getWeakBaliseIndex(balise) < 0) {
+                line = openWeakBalise(line, balise, true);
             }
             return line;
         }
-        line = closeWeakBalisis(line, balisis);
+        line = closeWeakBalise(line, balise);
 
-        hasComputedOneSingleLinedBalisis = false;
+        hasComputedOneSingleLinedBalise = false;
         return line;
     }
 
-    private static String computeParagraphBalisis(String line) {
-        var balisis = "p";
-        var balisisIndex = getWeakBalisisIndex(balisis);
-        if (balisisIndex == -1) {
-            openWeakBalisisStack.add(balisis);
-            return String.format("<%s>%s", balisis, line);
+    private static String computeParagraphBalise(String line) {
+        var balise = "p";
+        var baliseIndex = getWeakBaliseIndex(balise);
+        if (baliseIndex == -1) {
+            openWeakBaliseStack.add(balise);
+            return String.format("<%s>%s", balise, line);
         }
         return line;
     }
 
-    private static String computeStrongBalisis(String line, String mdRegex, String balisis) {
+    private static String computeStrongBalise(String line, String mdRegex, String balise) {
         line = line + " ";
-        var allBalisis = balisis.split(",");
+        var allBalise = balise.split(",");
         String part;
 
 
@@ -185,7 +183,7 @@ public abstract class MarkDownToHtmlConverter {
             var lastPartIndex = numberOfParts - 1;
 
             if (numberOfParts == 0) {
-                stringBuilder.append(computeNextBalisis(allBalisis));
+                stringBuilder.append(computeNextBalise(allBalise));
             }
             if (parts[0].startsWith(" ")) {
                 parts[0] = parts[0].substring(1);
@@ -195,7 +193,7 @@ public abstract class MarkDownToHtmlConverter {
                 part = parts[i];
                 stringBuilder.append(part);
                 if (i != lastPartIndex) {
-                    stringBuilder.append(computeNextBalisis(allBalisis));
+                    stringBuilder.append(computeNextBalise(allBalise));
                 }
             }
             return stringBuilder.toString();
@@ -204,87 +202,87 @@ public abstract class MarkDownToHtmlConverter {
         return line;
     }
 
-    private static String computeNextBalisis(String[] allBalisis) {
+    private static String computeNextBalise(String[] allBalise) {
         int index;
-        int balisisIndex = getStrongBalisisIndex(allBalisis[0]);
-        String currentBalisis;
+        int baliseIndex = getStrongBaliseIndex(allBalise[0]);
+        String currentBalise;
         StringBuilder stringBuilder = new StringBuilder();
 
-        if (balisisIndex == -1) {
-            for (index = 0; index < allBalisis.length; index++) {
-                currentBalisis = allBalisis[index];
-                openStrongBalisisStack.add(currentBalisis);
-                stringBuilder.append(String.format("<%s>", currentBalisis));
+        if (baliseIndex == -1) {
+            for (index = 0; index < allBalise.length; index++) {
+                currentBalise = allBalise[index];
+                openStrongBaliseStack.add(currentBalise);
+                stringBuilder.append(String.format("<%s>", currentBalise));
             }
         } else {
-            for (index =  allBalisis.length - 1; index >= 0; index--) {
-                currentBalisis = allBalisis[index];
-                balisisIndex = getStrongBalisisIndex(allBalisis[index]);
-                openStrongBalisisStack.remove(balisisIndex);
-                stringBuilder.append(String.format("</%s>", currentBalisis));
+            for (index =  allBalise.length - 1; index >= 0; index--) {
+                currentBalise = allBalise[index];
+                baliseIndex = getStrongBaliseIndex(allBalise[index]);
+                openStrongBaliseStack.remove(baliseIndex);
+                stringBuilder.append(String.format("</%s>", currentBalise));
             }
         }
         return stringBuilder.toString();
     }
 
-    private static String closeAllCurrentWeakBalisis(String line) {
+    private static String closeAllCurrentWeakBalise(String line) {
         var stringBuilder = new StringBuilder();
-        for(var balisis: openWeakBalisisStack) {
-            stringBuilder.append(String.format("</%s>", balisis));
+        for(var balise: openWeakBaliseStack) {
+            stringBuilder.append(String.format("</%s>", balise));
         }
         stringBuilder.append(line);
         return stringBuilder.toString();
     }
 
-    private static String closeAllCurrentStrongBalisis(String line) {
+    private static String closeAllCurrentStrongBalise(String line) {
         var stringBuilder = new StringBuilder();
 
-        var indexCode = getStrongBalisisIndex("code");
+        var indexCode = getStrongBaliseIndex("code");
         if (indexCode != -1) {
-            var index = getStrongBalisisIndex("xmp");
+            var index = getStrongBaliseIndex("xmp");
             if (index != -1) {
                 stringBuilder.append("</xmp>");
-                openStrongBalisisStack.remove(index);
+                openStrongBaliseStack.remove(index);
             }
             stringBuilder.append("</code>");
-            openStrongBalisisStack.remove(indexCode);
+            openStrongBaliseStack.remove(indexCode);
         }
 
-        for(var balisis: openStrongBalisisStack) {
-            stringBuilder.append(String.format("</%s>", balisis));
+        for(var balise: openStrongBaliseStack) {
+            stringBuilder.append(String.format("</%s>", balise));
         }
         stringBuilder.append(line);
         return stringBuilder.toString();
     }
 
-    private static String openWeakBalisis(String line, String balisis, Boolean closeAllCurrentWeakBalisis) {
-        line = String.format("<%s>\n%s", balisis, line);
-        if (closeAllCurrentWeakBalisis) {
-            line = closeAllCurrentWeakBalisis(line);
+    private static String openWeakBalise(String line, String balise, Boolean closeAllCurrentWeakBalise) {
+        line = String.format("<%s>\n%s", balise, line);
+        if (closeAllCurrentWeakBalise) {
+            line = closeAllCurrentWeakBalise(line);
         }
-        openWeakBalisisStack.add(balisis);
+        openWeakBaliseStack.add(balise);
         return line;
     }
 
-    private static String closeWeakBalisis(String line, String balisis) {
-        var balisisIndex = getWeakBalisisIndex(balisis);
-        if (balisisIndex != -1) {
-            line = String.format("</%s>%s", balisis, line);
-            openWeakBalisisStack.remove(balisisIndex);
+    private static String closeWeakBalise(String line, String balise) {
+        var baliseIndex = getWeakBaliseIndex(balise);
+        if (baliseIndex != -1) {
+            line = String.format("</%s>%s", balise, line);
+            openWeakBaliseStack.remove(baliseIndex);
         }
         return line;
     }
 
-    private static int getWeakBalisisIndex(String balisis) {
-        return IntStream.range(0, openWeakBalisisStack.size())
-                .filter(index -> openWeakBalisisStack.get(index).equals(balisis))
+    private static int getWeakBaliseIndex(String balise) {
+        return IntStream.range(0, openWeakBaliseStack.size())
+                .filter(index -> openWeakBaliseStack.get(index).equals(balise))
                 .findFirst()
                 .orElse(-1);
     }
 
-    private static int getStrongBalisisIndex(String balisis) {
-        return IntStream.range(0, openStrongBalisisStack.size())
-                .filter(index -> openStrongBalisisStack.get(index).equals(balisis))
+    private static int getStrongBaliseIndex(String balise) {
+        return IntStream.range(0, openStrongBaliseStack.size())
+                .filter(index -> openStrongBaliseStack.get(index).equals(balise))
                 .findFirst()
                 .orElse(-1);
     }

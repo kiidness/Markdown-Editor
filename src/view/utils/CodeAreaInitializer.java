@@ -23,6 +23,7 @@ public abstract class CodeAreaInitializer {
     private static final String TITLE5_PATTERN = "((^#{5})|(\n#{5}))\\h[^\n]+";
     private static final String TITLE6_PATTERN = "((^#{6})|(\n#{6}))\\h[^\n]+";
     private static final String BALISE_PATTERN = "<(.|\\R)*?/?>";
+    private static final String CODE_PATTERN = "([`]{3}|[`])(.|\n)+([`]{3}|[`])";
 
     private static final String ITALICBOLD_PATTERN = "[*_]{3}[^\n]+[*_]{3}";
     private static final String BOLDSTRIKETHROUGH_PATTERN= "([~]{2}[*_]{2})|([*_]{2}[~]{2})[^\n]+([~]{2}[*_]{2})|([*_]{2}[~]{2})";
@@ -40,6 +41,7 @@ public abstract class CodeAreaInitializer {
                     + "|(?<TITLE5>" + TITLE5_PATTERN + ")"
                     + "|(?<TITLE6>" + TITLE6_PATTERN + ")"
                     + "|(?<BALISE>" + BALISE_PATTERN + ")"
+                    + "|(?<CODE>" + CODE_PATTERN + ")"
     );
 
     public static void initialize(CodeArea codeArea) {
@@ -70,8 +72,9 @@ public abstract class CodeAreaInitializer {
                         matcher.group("ITALICBOLD") != null ? "italicbold" :
                             matcher.group("ITALIC") != null ? "italic" :
                                     matcher.group("BOLD") != null ? "bold" :
-
                                                 matcher.group("STRIKETHROUGH") != null ? "strikethrough" :
+                                                        matcher.group("CODE") != null ? "code" :
+                    matcher.group("BALISE") != null ? "balise" :
                                                         null; /* never happens */ assert styleClass != null;
             spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
             spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());

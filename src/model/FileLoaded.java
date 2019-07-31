@@ -88,7 +88,7 @@ public class FileLoaded {
         return surroundWith(start, end, "~{2}", "~~");
     }
 
-    private int surroundWith(int start, int end, String mdBalisisRegex, String markDownBalisis) {
+    private int surroundWith(int start, int end, String mdBaliseRegex, String markDownBalise) {
         int max;
         for (int i = 10; i >= 0; i--) {
             max = 1 + i;
@@ -97,7 +97,7 @@ public class FileLoaded {
 
             var subSequence = markDownText.subSequence(start - max, end + max).toString();
 
-            Pattern pattern = Pattern.compile(String.format("(%s)", mdBalisisRegex));
+            Pattern pattern = Pattern.compile(String.format("(%s)", mdBaliseRegex));
             Matcher matcher = pattern.matcher(markDownText);
             int numApparitions = 0;
             while (matcher.find())
@@ -107,7 +107,7 @@ public class FileLoaded {
                 String tmp = getMarkDownText();
                 setMarkDownText(String.format("%s%s%s",
                         markDownText.subSequence(0, start - max),
-                        subSequence.replaceFirst(String.format("^(.{0,%d})%s(.+)%s(.{0,%d})$", i, mdBalisisRegex, mdBalisisRegex, i), "$1$2$3"),
+                        subSequence.replaceFirst(String.format("^(.{0,%d})%s(.+)%s(.{0,%d})$", i, mdBaliseRegex, mdBaliseRegex, i), "$1$2$3"),
                         markDownText.subSequence(end + max, markDownText.length())));
                 return (getMarkDownText().length() - tmp.length()) / 2;
             }
@@ -115,11 +115,11 @@ public class FileLoaded {
 
         setMarkDownText(String.format("%s%s%s%s%s",
                 markDownText.subSequence(0, start),
-                markDownBalisis,
+                markDownBalise,
                 markDownText.subSequence(start,end),
-                markDownBalisis,
+                markDownBalise,
                 markDownText.subSequence(end, markDownText.length())));
-        return markDownBalisis.length();
+        return markDownBalise.length();
     }
 
     public void setTitle(int numberLine, int titleNumber) {
