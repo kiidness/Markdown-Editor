@@ -11,10 +11,14 @@ An open source markdown editor written in `JavaFX`.
 - **Pdf** and **Html** export
 - Syntax highlighting
 
+
 ## Dependencies
 This project is using [RichTextFX](https://github.com/FXMisc/RichTextFX)
+
 Pdf and HTML icons made by Smashicons from [FlatIcon](www.flaticon.com)
+
 Based on [Github flabored markdown](https://github.github.com/gfm/)
+
 
 # Download
 *Coming soon*.
