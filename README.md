@@ -24,4 +24,4 @@ Based on [Github flavored markdown](https://github.github.com/gfm/)
 *Coming soon*.
 
 # License
-Licensed under [MIT Licence](https://github.com/kiidness/Markdown-Editor/blob/master/LICENSE).
+Licensed under [MIT License](https://github.com/kiidness/Markdown-Editor/blob/master/LICENSE).
