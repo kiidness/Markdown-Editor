@@ -1,13 +1,29 @@
 # Markdown Editor
 
-This software is an opensource JavaFX project.
+An open source markdown editor written in `JavaFX`.
 
-![Image not found](file:/image\screenshot.png)
+![Markdown Editor screenshot](image/screenshot.png)
+
+## Features
+- Create or edit markdown and html files
+- Html preview
+- Style selection (**CSS**)
+- **Pdf** and **Html** export
+- Syntax highlighting
 
 
 ## Dependencies
-This project is using RichTextFX
+This project is using [RichTextFX](https://github.com/FXMisc/RichTextFX)
 
+Pdf and HTML icons made by Smashicons from [FlatIcon](www.flaticon.com)
 
-## Licence
-This repository is under the MIT Licence.
+Based on [Github flavored markdown](https://github.github.com/gfm/)
+
+## Architecture
+Markdown Editor is made with [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel) pattern. It separate clearly JavaFX view and Java back-end, allowing you to use the Model for view made with another technology (for example Swing or else).
+
+# Download
+*Coming soon*.
+
+# License
+Licensed under [MIT License](https://github.com/kiidness/Markdown-Editor/blob/master/LICENSE).
