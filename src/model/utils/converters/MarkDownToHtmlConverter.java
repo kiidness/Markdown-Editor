@@ -38,6 +38,8 @@ public abstract class MarkDownToHtmlConverter {
             if (!hasComputedOneSingleLinedBalise && getStrongBaliseIndex("code") == -1) {
                 line = computeParagraphBalise(line);
                 line = line + "</br>";
+            } else if (line.trim().isEmpty()) {
+                line = closeAllCurrentWeakBalise(line);
             }
             line = line + "\n";
             convertedText.append(line);
@@ -171,32 +173,18 @@ public abstract class MarkDownToHtmlConverter {
     private static String computeStrongBalise(String line, String mdRegex, String balise) {
         line = line + " ";
         var allBalise = balise.split(",");
-        String part;
+        String part, tmpPart;
 
 
         if (line.matches(String.format(".*%s.*", mdRegex))) {
-            var stringBuilder = new StringBuilder();
             line = " " + line;
 
-            var parts = line.split(String.format("[^\\\\]%s", mdRegex));
-            var numberOfParts = parts.length;
-            var lastPartIndex = numberOfParts - 1;
-
-            if (numberOfParts == 0) {
-                stringBuilder.append(computeNextBalise(allBalise));
+            var pattern = Pattern.compile(String.format("([^\\\\])(%s)", mdRegex));
+            var matcher = pattern.matcher(line);
+            while (matcher.find()) {
+                line = matcher.replaceFirst(String.format("$1%s", computeNextBalise(allBalise)));
+                matcher = pattern.matcher(line);
             }
-            if (parts[0].startsWith(" ")) {
-                parts[0] = parts[0].substring(1);
-            }
-
-            for(int i = 0; i < numberOfParts; i++) {
-                part = parts[i];
-                stringBuilder.append(part);
-                if (i != lastPartIndex) {
-                    stringBuilder.append(computeNextBalise(allBalise));
-                }
-            }
-            return stringBuilder.toString();
         }
         line = line.replaceAll(" $", "");
         return line;
