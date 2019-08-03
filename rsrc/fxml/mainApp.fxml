@@ -54,7 +54,7 @@
             <MenuItem fx:id="menuItemExportAs" text="💾 Export As..." onAction="#exportAs"/>
             <MenuItem fx:id="menuItemHelp" text="❔ _Help" onAction="#help"/>
         </Menu>
-        <Menu fx:id="menuOptions" text="🔧 Options"/>
+        <Menu fx:id="menuOptions" text="🔧 Options" visible="false"/>
     </MenuBar>
 
     <BorderPane GridPane.rowIndex="1" GridPane.columnIndex="0">
