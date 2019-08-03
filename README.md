@@ -24,6 +24,7 @@ Markdown Editor is made with [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93
 
 # Download
 `Java 10` is required to run the current release
+
 [JAR and EXE available here](https://github.com/kiidness/Markdown-Editor/releases/download/1.0.0/markdown-editor-1.0.0.zip)
 
 # Releases
