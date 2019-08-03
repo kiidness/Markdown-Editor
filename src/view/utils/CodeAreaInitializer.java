@@ -13,9 +13,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class CodeAreaInitializer {
-    private static final String BOLD_PATTERN = "[*_]{2}[^\n]+[*_]{2}";
-    private static final String ITALIC_PATTERN = "[*_][^\n]+[*_]";
-    private static final String STRIKETHROUGH_PATTERN = "[~]{2}[^\\n]+[~]{2}";
+    private static final String BOLD_PATTERN = PatternFactory.generateMultilinedBalisePattern("[*_]{2}", "BOLD");
+    private static final String ITALIC_PATTERN = PatternFactory.generateMultilinedBalisePattern("[*_]", "ITALIC");
+    private static final String STRIKETHROUGH_PATTERN = PatternFactory.generateMultilinedBalisePattern("[~]{2}", "STRIKETHROUGH");
     private static final String TITLE1_PATTERN = "((^#)|(\n#))\\h[^\n]+";
     private static final String TITLE2_PATTERN = "((^#{2})|(\n#{2}))\\h[^\n]+";
     private static final String TITLE3_PATTERN = "((^#{3})|(\n#{3}))\\h[^\n]+";
@@ -23,17 +23,16 @@ public abstract class CodeAreaInitializer {
     private static final String TITLE5_PATTERN = "((^#{5})|(\n#{5}))\\h[^\n]+";
     private static final String TITLE6_PATTERN = "((^#{6})|(\n#{6}))\\h[^\n]+";
     private static final String BALISE_PATTERN = "<(.|\\R)*?/?>";
-    private static final String CODE_PATTERN = "([`]{3}|[`])(.|\n)+([`]{3}|[`])";
+    private static final String CODE_PATTERN = PatternFactory.generateMultilinedBalisePattern("[`]{3}|[`]", "CODE");
 
-    private static final String ITALICBOLD_PATTERN = "[*_]{3}[^\n]+[*_]{3}";
-    private static final String BOLDSTRIKETHROUGH_PATTERN= "([~]{2}[*_]{2})|([*_]{2}[~]{2})[^\n]+([~]{2}[*_]{2})|([*_]{2}[~]{2})";
-
+    private static final String ITALICBOLD_PATTERN = PatternFactory.generateMultilinedBalisePattern("[*_]{3}", "ITALICBOLD");
+    private static final String BOLDSTRIKETHROUGH_PATTERN = PatternFactory.generateMultilinedBalisePattern("([~]{2}[*_]{2})|([*_]{2}[~]{2})", "BOLDSTRIKETHROUGH");
     private static final Pattern PATTERN = Pattern.compile(
-                    "(?<BOLDSTRIKETHROUGH>" + BOLDSTRIKETHROUGH_PATTERN + ")"
-                    + "|(?<ITALICBOLD>" + ITALICBOLD_PATTERN + ")"
-                    + "|(?<BOLD>" + BOLD_PATTERN + ")"
-                    + "|(?<ITALIC>" + ITALIC_PATTERN + ")"
-                    + "|(?<STRIKETHROUGH>" + STRIKETHROUGH_PATTERN + ")"
+                    BOLDSTRIKETHROUGH_PATTERN
+                    + "|" + ITALICBOLD_PATTERN
+                    + "|" + BOLD_PATTERN
+                    + "|" + ITALIC_PATTERN
+                    + "|" + STRIKETHROUGH_PATTERN
                     + "|(?<TITLE1>" + TITLE1_PATTERN + ")"
                     + "|(?<TITLE2>" + TITLE2_PATTERN + ")"
                     + "|(?<TITLE3>" + TITLE3_PATTERN + ")"
@@ -41,7 +40,7 @@ public abstract class CodeAreaInitializer {
                     + "|(?<TITLE5>" + TITLE5_PATTERN + ")"
                     + "|(?<TITLE6>" + TITLE6_PATTERN + ")"
                     + "|(?<BALISE>" + BALISE_PATTERN + ")"
-                    + "|(?<CODE>" + CODE_PATTERN + ")"
+                    + "|" + CODE_PATTERN
     );
 
     public static void initialize(CodeArea codeArea) {
@@ -56,7 +55,7 @@ public abstract class CodeAreaInitializer {
     }
 
     private static StyleSpans<Collection<String>> computeHighlighting(String text) {
-        Matcher matcher = PATTERN.matcher(text);
+        Matcher matcher = PATTERN.matcher(" " + text); // Adding an espace to get arround with \ character
         int lastKwEnd = 0;
         StyleSpansBuilder<Collection<String>> spansBuilder
                 = new StyleSpansBuilder<>();
@@ -76,9 +75,9 @@ public abstract class CodeAreaInitializer {
                                                         matcher.group("CODE") != null ? "code" :
                     matcher.group("BALISE") != null ? "balise" :
                                                         null; /* never happens */ assert styleClass != null;
-            spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
-            spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
-            lastKwEnd = matcher.end();
+            spansBuilder.add(Collections.emptyList(), matcher.start(styleClass.toUpperCase()) - lastKwEnd  - 1);
+            spansBuilder.add(Collections.singleton(styleClass), matcher.end(styleClass.toUpperCase()) - matcher.start(styleClass.toUpperCase()));
+            lastKwEnd = matcher.end(styleClass.toUpperCase()) - 1;
         }
         spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
         return spansBuilder.create();
