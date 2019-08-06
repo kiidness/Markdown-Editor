@@ -73,3 +73,7 @@
 .code {
  -fx-fill: #aaffaa;
 }
+
+.blockcode {
+ -fx-fill: #aaffaa;
+}

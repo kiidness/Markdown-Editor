@@ -16,9 +16,6 @@ public abstract class MarkDownToHtmlConverter {
     }
 
     public static String convert(String markDownText) {
-        openWeakBaliseStack = new ArrayList<>();
-        openStrongBaliseStack = new ArrayList<>();
-
         var convertedText = new StringBuilder();
         convertedText.append("<html>\n<header>\n<style>");
         convertedText.append(currentStyle);
@@ -28,16 +25,22 @@ public abstract class MarkDownToHtmlConverter {
         return convertedText.toString();
     }
 
-    private static String getConvertedBodyHtml(String markDownText) {
+    public static String getConvertedBodyHtml(String markDownText) {
+        openWeakBaliseStack = new ArrayList<>();
+        openStrongBaliseStack = new ArrayList<>();
+
         var convertedText = new StringBuilder();
         for (var line : markDownText.split("\n")) {
             hasComputedOneSingleLinedBalise = true;
 
-            line = computeSingleLinedBalise(line);
             line = computeMultiLinedStrongBalise(line);
-            if (!hasComputedOneSingleLinedBalise && getStrongBaliseIndex("code") == -1) {
+            line = computeSingleLinedBalise(line);
+            var e = openStrongBaliseStack;
+            if (!hasComputedOneSingleLinedBalise) {
                 line = computeParagraphBalise(line);
-                line = line + "</br>";
+                if (getStrongBaliseIndex("pre") == -1) {
+                    line = line + "</br>";
+                }
             } else if (line.trim().isEmpty()) {
                 line = closeAllCurrentWeakBalise(line);
             }
@@ -50,10 +53,16 @@ public abstract class MarkDownToHtmlConverter {
     }
 
     private static String computeMultiLinedStrongBalise(String line) {
-        // code
-        line = computeStrongBalise(line, "([`]{3}|[`])", "code,xmp");
+        var isCodeDefinedBeforeLine = getStrongBaliseIndex("code") != -1;
+        var isPreDefinedBeforeLine = getStrongBaliseIndex("pre") != -1;
 
-        if (getStrongBaliseIndex("code") != -1)  {
+        line = computeStrongBalise(line, "[`]{3}", "pre");
+        line = computeStrongBalise(line, "[`]", "code");
+
+        // code
+        line = computeLtGtSigns(line, isCodeDefinedBeforeLine, isPreDefinedBeforeLine);
+
+        if (getStrongBaliseIndex("code") != -1 || getStrongBaliseIndex("pre") != -1)  {
             return line;
         }
 
@@ -185,6 +194,7 @@ public abstract class MarkDownToHtmlConverter {
                 line = matcher.replaceFirst(String.format("$1%s", computeNextBalise(allBalise)));
                 matcher = pattern.matcher(line);
             }
+            line = line.replaceAll("^ ", "");
         }
         line = line.replaceAll(" $", "");
         return line;
@@ -217,6 +227,7 @@ public abstract class MarkDownToHtmlConverter {
         var stringBuilder = new StringBuilder();
         for(var balise: openWeakBaliseStack) {
             stringBuilder.append(String.format("</%s>", balise));
+            //openWeakBaliseStack.remove(balise);
         }
         stringBuilder.append(line);
         return stringBuilder.toString();
@@ -225,19 +236,9 @@ public abstract class MarkDownToHtmlConverter {
     private static String closeAllCurrentStrongBalise(String line) {
         var stringBuilder = new StringBuilder();
 
-        var indexCode = getStrongBaliseIndex("code");
-        if (indexCode != -1) {
-            var index = getStrongBaliseIndex("xmp");
-            if (index != -1) {
-                stringBuilder.append("</xmp>");
-                openStrongBaliseStack.remove(index);
-            }
-            stringBuilder.append("</code>");
-            openStrongBaliseStack.remove(indexCode);
-        }
-
         for(var balise: openStrongBaliseStack) {
             stringBuilder.append(String.format("</%s>", balise));
+            //openStrongBaliseStack.remove(balise);
         }
         stringBuilder.append(line);
         return stringBuilder.toString();
@@ -259,6 +260,70 @@ public abstract class MarkDownToHtmlConverter {
             openWeakBaliseStack.remove(baliseIndex);
         }
         return line;
+    }
+
+    private static String computeLtGtSigns(String line, boolean isCodeDefinedBeforeLine, boolean isPreDefinedBeforeLine) {
+        String[] balises = {"pre", "code"};
+        String[] parts;
+        line = " " + line + " ";
+
+        for (var balise : balises) {
+            StringBuilder stringBuilder = new StringBuilder();
+            if ((!isCodeDefinedBeforeLine && balise.equals("code")) | (!isPreDefinedBeforeLine && balise.equals("pre"))) {
+                parts = line.split(String.format("<%s>", balise));
+
+                parts[0] = parts[0].replaceAll("\\\\>", "&gt");
+                parts[0] = parts[0].replaceAll("\\\\<", "&lt");
+                stringBuilder.append(parts[0]);
+
+                for (int i = 1; i < parts.length; i++) {
+                    stringBuilder.append(String.format("<%s>", balise));
+
+                    var subparts = parts[i].split(String.format("</%s>", balise));
+                    subparts[0] = subparts[0].replaceAll(">", "&gt");
+                    subparts[0] = subparts[0].replaceAll("<", "&lt");
+                    stringBuilder.append(subparts[0]);
+
+                    if (subparts.length >= 2) {
+                        subparts[1] = subparts[1].replaceAll("\\\\>", "&gt");
+                        subparts[1] = subparts[1].replaceAll("\\\\<", "&lt");
+                        stringBuilder.append(String.format("</%s>", balise));
+                        stringBuilder.append(subparts[1]);
+                    }
+                }
+            } else {
+                parts = line.split(String.format("</%s>", balise));
+
+                parts[0] = parts[0].replaceAll(">", "&gt");
+                parts[0] = parts[0].replaceAll("<", "&lt");
+                stringBuilder.append(parts[0]);
+
+                for (int i = 1; i < parts.length; i++) {
+                    stringBuilder.append(String.format("</%s>", balise));
+
+                    var subparts = parts[i].split(String.format("<%s>", balise));
+
+                    subparts[0] = subparts[0].replaceAll("\\\\>", "&gt");
+                    subparts[0] = subparts[0].replaceAll("\\\\<", "&lt");
+
+                    if (subparts.length >= 2) {
+                        subparts[1] = subparts[1].replaceAll(">", "&gt");
+                        subparts[1] = subparts[1].replaceAll("<", "&lt");
+
+                        stringBuilder.append(String.format("<%s>", balise));
+                        stringBuilder.append(subparts[1]);
+                    } else {
+                        stringBuilder.append(subparts[0]);
+                    }
+                }
+            }
+            line = stringBuilder.toString();
+        }
+
+        if (line.length() <= 2) {
+            return line.substring(1, 1);
+        }
+        return line.substring(1, line.length() - 1);
     }
 
     private static int getWeakBaliseIndex(String balise) {

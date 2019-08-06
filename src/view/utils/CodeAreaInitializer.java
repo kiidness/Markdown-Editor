@@ -23,7 +23,8 @@ public abstract class CodeAreaInitializer {
     private static final String TITLE5_PATTERN = "((^#{5})|(\n#{5}))\\h[^\n]+";
     private static final String TITLE6_PATTERN = "((^#{6})|(\n#{6}))\\h[^\n]+";
     private static final String BALISE_PATTERN = "<(.|\\R)*?/?>";
-    private static final String CODE_PATTERN = PatternFactory.generateMultilinedBalisePattern("[`]{3}|[`]", "CODE");
+    private static final String BLOCK_CODE_PATTERN = PatternFactory.generateMultilinedBalisePattern("[`]{3}", "BLOCKCODE");
+    private static final String CODE_PATTERN = PatternFactory.generateMultilinedBalisePattern("[`]", "CODE");
 
     private static final String ITALICBOLD_PATTERN = PatternFactory.generateMultilinedBalisePattern("[*_]{3}", "ITALICBOLD");
     private static final String BOLDSTRIKETHROUGH_PATTERN = PatternFactory.generateMultilinedBalisePattern("([~]{2}[*_]{2})|([*_]{2}[~]{2})", "BOLDSTRIKETHROUGH");
@@ -40,6 +41,7 @@ public abstract class CodeAreaInitializer {
                     + "|(?<TITLE5>" + TITLE5_PATTERN + ")"
                     + "|(?<TITLE6>" + TITLE6_PATTERN + ")"
                     + "|(?<BALISE>" + BALISE_PATTERN + ")"
+                    + "|" + BLOCK_CODE_PATTERN
                     + "|" + CODE_PATTERN
     );
 
@@ -72,7 +74,8 @@ public abstract class CodeAreaInitializer {
                             matcher.group("ITALIC") != null ? "italic" :
                                     matcher.group("BOLD") != null ? "bold" :
                                                 matcher.group("STRIKETHROUGH") != null ? "strikethrough" :
-                                                        matcher.group("CODE") != null ? "code" :
+                                                        matcher.group("BLOCKCODE") != null ? "blockcode" :
+                                                                matcher.group("CODE") != null ? "code" :
                     matcher.group("BALISE") != null ? "balise" :
                                                         null; /* never happens */ assert styleClass != null;
             spansBuilder.add(Collections.emptyList(), matcher.start(styleClass.toUpperCase()) - lastKwEnd  - 1);

@@ -16,7 +16,7 @@ body {
     font-family: sans-serif;
 }
 
-code > xmp {
+code, pre {
   margin: 0 2px;
   padding: 0 5px;
   border: 1px solid #eaeaea;
@@ -25,6 +25,7 @@ code > xmp {
   font-family: Consolas, 'Liberation Mono', Courier, monospace;
   font-size: 12px;
   color: #333333;
+  width = 150px;
   word-break: break-all;
 }
 
