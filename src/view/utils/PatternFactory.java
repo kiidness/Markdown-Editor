@@ -16,4 +16,18 @@ public abstract class PatternFactory {
 
         return stringBuilder.toString();
     }
+
+    public static String generateTitlePattern (int titleNumber) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("(?<TITLE");
+        stringBuilder.append(titleNumber);
+        stringBuilder.append(">((^#{");
+        stringBuilder.append(titleNumber);
+        stringBuilder.append("})|(\n#{");
+        stringBuilder.append(titleNumber);
+        stringBuilder.append("}))\\h[^\n]+)");
+
+        return stringBuilder.toString();
+    }
 }

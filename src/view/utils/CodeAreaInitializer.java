@@ -16,12 +16,12 @@ public abstract class CodeAreaInitializer {
     private static final String BOLD_PATTERN = PatternFactory.generateMultilinedBalisePattern("[*_]{2}", "BOLD");
     private static final String ITALIC_PATTERN = PatternFactory.generateMultilinedBalisePattern("[*_]", "ITALIC");
     private static final String STRIKETHROUGH_PATTERN = PatternFactory.generateMultilinedBalisePattern("[~]{2}", "STRIKETHROUGH");
-    private static final String TITLE1_PATTERN = "((^#)|(\n#))\\h[^\n]+";
-    private static final String TITLE2_PATTERN = "((^#{2})|(\n#{2}))\\h[^\n]+";
-    private static final String TITLE3_PATTERN = "((^#{3})|(\n#{3}))\\h[^\n]+";
-    private static final String TITLE4_PATTERN = "((^#{4})|(\n#{4}))\\h[^\n]+";
-    private static final String TITLE5_PATTERN = "((^#{5})|(\n#{5}))\\h[^\n]+";
-    private static final String TITLE6_PATTERN = "((^#{6})|(\n#{6}))\\h[^\n]+";
+    private static final String TITLE1_PATTERN = PatternFactory.generateTitlePattern(1);
+    private static final String TITLE2_PATTERN = PatternFactory.generateTitlePattern(2);
+    private static final String TITLE3_PATTERN = PatternFactory.generateTitlePattern(3);
+    private static final String TITLE4_PATTERN = PatternFactory.generateTitlePattern(4);
+    private static final String TITLE5_PATTERN = PatternFactory.generateTitlePattern(5);
+    private static final String TITLE6_PATTERN = PatternFactory.generateTitlePattern(6);
     private static final String BALISE_PATTERN = "<.*/?>";
     private static final String BLOCK_CODE_PATTERN = PatternFactory.generateMultilinedBalisePattern("[`]{3}", "BLOCKCODE");
     private static final String CODE_PATTERN = PatternFactory.generateMultilinedBalisePattern("[`]", "CODE");
@@ -34,12 +34,12 @@ public abstract class CodeAreaInitializer {
                     + "|" + BOLD_PATTERN
                     + "|" + ITALIC_PATTERN
                     + "|" + STRIKETHROUGH_PATTERN
-                    + "|(?<TITLE1>" + TITLE1_PATTERN + ")"
-                    + "|(?<TITLE2>" + TITLE2_PATTERN + ")"
-                    + "|(?<TITLE3>" + TITLE3_PATTERN + ")"
-                    + "|(?<TITLE4>" + TITLE4_PATTERN + ")"
-                    + "|(?<TITLE5>" + TITLE5_PATTERN + ")"
-                    + "|(?<TITLE6>" + TITLE6_PATTERN + ")"
+                    + "|" + TITLE1_PATTERN
+                    + "|" + TITLE2_PATTERN
+                    + "|" + TITLE3_PATTERN
+                    + "|" + TITLE4_PATTERN
+                    + "|" + TITLE5_PATTERN
+                    + "|" + TITLE6_PATTERN
                     + "|(?<BALISE>" + BALISE_PATTERN + ")"
                     + "|" + BLOCK_CODE_PATTERN
                     + "|" + CODE_PATTERN

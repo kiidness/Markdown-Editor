@@ -52,7 +52,6 @@ public class FileEditorControl extends BorderPane {
     }
 
     private void initialize() {
-        codeArea.replaceText(fileLoadedVM.getMarkDownText());
         webView.getEngine().loadContent(fileLoadedVM.getHtmlText(), "text/html");
 
         fileLoadedVM.htmlTextProperty().addListener((___) -> {
@@ -75,6 +74,8 @@ public class FileEditorControl extends BorderPane {
                         codeArea.getCaretColumn(),
                         codeArea.getText(0, codeArea.getCaretPosition()).split("\n").length),
                         codeArea.caretPositionProperty()));
+        
+        codeArea.replaceText(fileLoadedVM.getMarkDownText());
     }
 
 
