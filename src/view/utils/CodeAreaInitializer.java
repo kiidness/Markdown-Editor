@@ -22,7 +22,7 @@ public abstract class CodeAreaInitializer {
     private static final String TITLE4_PATTERN = "((^#{4})|(\n#{4}))\\h[^\n]+";
     private static final String TITLE5_PATTERN = "((^#{5})|(\n#{5}))\\h[^\n]+";
     private static final String TITLE6_PATTERN = "((^#{6})|(\n#{6}))\\h[^\n]+";
-    private static final String BALISE_PATTERN = "<(.|\\R)*/?>";
+    private static final String BALISE_PATTERN = "<.*/?>";
     private static final String BLOCK_CODE_PATTERN = PatternFactory.generateMultilinedBalisePattern("[`]{3}", "BLOCKCODE");
     private static final String CODE_PATTERN = PatternFactory.generateMultilinedBalisePattern("[`]", "CODE");
 
