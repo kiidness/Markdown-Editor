@@ -22,7 +22,7 @@ public abstract class CodeAreaInitializer {
     private static final String TITLE4_PATTERN = "((^#{4})|(\n#{4}))\\h[^\n]+";
     private static final String TITLE5_PATTERN = "((^#{5})|(\n#{5}))\\h[^\n]+";
     private static final String TITLE6_PATTERN = "((^#{6})|(\n#{6}))\\h[^\n]+";
-    private static final String BALISE_PATTERN = "<(.|\\R)*?/?>";
+    private static final String BALISE_PATTERN = "<(.|\\R)*/?>";
     private static final String BLOCK_CODE_PATTERN = PatternFactory.generateMultilinedBalisePattern("[`]{3}", "BLOCKCODE");
     private static final String CODE_PATTERN = PatternFactory.generateMultilinedBalisePattern("[`]", "CODE");
 
@@ -57,7 +57,7 @@ public abstract class CodeAreaInitializer {
     }
 
     private static StyleSpans<Collection<String>> computeHighlighting(String text) {
-        Matcher matcher = PATTERN.matcher(" " + text); // Adding an espace to get arround with \ character
+        Matcher matcher = PATTERN.matcher(text); // Adding an espace to get arround with \ character
         int lastKwEnd = 0;
         StyleSpansBuilder<Collection<String>> spansBuilder
                 = new StyleSpansBuilder<>();
@@ -78,9 +78,9 @@ public abstract class CodeAreaInitializer {
                                                                 matcher.group("CODE") != null ? "code" :
                     matcher.group("BALISE") != null ? "balise" :
                                                         null; /* never happens */ assert styleClass != null;
-            spansBuilder.add(Collections.emptyList(), matcher.start(styleClass.toUpperCase()) - lastKwEnd  - 1);
+            spansBuilder.add(Collections.emptyList(), matcher.start(styleClass.toUpperCase()) - lastKwEnd);
             spansBuilder.add(Collections.singleton(styleClass), matcher.end(styleClass.toUpperCase()) - matcher.start(styleClass.toUpperCase()));
-            lastKwEnd = matcher.end(styleClass.toUpperCase()) - 1;
+            lastKwEnd = matcher.end(styleClass.toUpperCase());
         }
         spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
         return spansBuilder.create();
