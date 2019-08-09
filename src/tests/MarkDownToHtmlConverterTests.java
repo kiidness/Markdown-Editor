@@ -157,4 +157,14 @@ public class MarkDownToHtmlConverterTests {
 
         assert(result.contains(html));
     }
+
+    @Test
+    public final void testTable() {
+        String markdown = "Test 1|Test 2\n-|-\ntest 1|test 2\n";
+        String html = "<table>\n<tr>\n<th>Test 1</th>\n<th>Test 2</th>\n</tr>\n<tr>\n<td>test 1</td>\n<td>test 2</td>\n</tr>\n</table>";
+
+        var result = MarkDownToHtmlConverter.getConvertedBodyHtml(markdown);
+
+        assert(result.contains(html));
+    }
 }

@@ -8,7 +8,8 @@ import java.util.stream.IntStream;
 public abstract class MarkDownToHtmlConverter {
     private static List<String> openWeakBaliseStack;
     private static List<String> openStrongBaliseStack;
-    private static boolean hasComputedOneSingleLinedBalise;
+    private static boolean hasComputedOneSingleLinedBalise, mayBeTable, mustAppendPreviousLine, mustIgnoreCurrentLine;
+    private static String previousLine;
 
     private static String currentStyle = "";
     public static void setCurrentStyle(String styleText) {
@@ -28,15 +29,19 @@ public abstract class MarkDownToHtmlConverter {
     public static String getConvertedBodyHtml(String markDownText) {
         openWeakBaliseStack = new ArrayList<>();
         openStrongBaliseStack = new ArrayList<>();
+        previousLine = "";
+        mayBeTable = false;
 
         var convertedText = new StringBuilder();
         for (var line : markDownText.split("\n")) {
             hasComputedOneSingleLinedBalise = true;
+            mustAppendPreviousLine = false;
+            mustIgnoreCurrentLine = false;
 
             line = computeMultiLinedStrongBalise(line);
             line = computeSingleLinedBalise(line);
-            var e = openStrongBaliseStack;
-            if (!hasComputedOneSingleLinedBalise) {
+
+            if (!hasComputedOneSingleLinedBalise && !mayBeTable) {
                 line = computeParagraphBalise(line);
                 if (getStrongBaliseIndex("pre") == -1) {
                     line = line + "</br>";
@@ -44,8 +49,20 @@ public abstract class MarkDownToHtmlConverter {
             } else if (line.trim().isEmpty()) {
                 line = closeAllCurrentWeakBalise(line);
             }
-            line = line + "\n";
-            convertedText.append(line);
+
+            if (mustAppendPreviousLine) {
+                previousLine = previousLine + "\n";
+                convertedText.append(previousLine);
+            }
+
+            previousLine = line;
+            if (!mayBeTable && !mustIgnoreCurrentLine) {
+                line = line + "\n";
+                convertedText.append(line);
+            }
+        }
+        if (mayBeTable) {
+            convertedText.append(previousLine + "\n");
         }
         convertedText.append(closeAllCurrentWeakBalise(""));
         convertedText.append(closeAllCurrentStrongBalise(""));
@@ -94,7 +111,7 @@ public abstract class MarkDownToHtmlConverter {
         }
 
         // Line
-        if (line.matches("^===+$|^---+$")) {
+        if (line.matches("^===+$|^---+$|^[*][*][*]+$")) {
             return "<hr>";
         }
 
@@ -143,6 +160,44 @@ public abstract class MarkDownToHtmlConverter {
             return closeAllCurrentWeakBalise(line);
         }
 
+        // Table
+        if (mayBeTable) {
+            if (line.matches("^[|]?(\\s*)[-]+(\\s*)([|](\\s*)[-]+)+(\\s*)[|]?$")) {
+                previousLine.replaceAll("^[|]|[|]$", "");
+                var partsHeader = previousLine.split("[|]");
+                var sb = new StringBuilder();
+
+                sb.append("<tr>\n");
+                for (var part : partsHeader) {
+                    sb.append("<th>");
+                    sb.append(part);
+                    sb.append("</th>\n");
+                }
+                sb.append("</tr>");
+                previousLine = sb.toString();
+                previousLine = openWeakBalise(previousLine, "table", true);
+
+                mustAppendPreviousLine = true;
+                mustIgnoreCurrentLine = true;
+                mayBeTable = false;
+                return line;
+            } else if (line.matches("^[|]?.+([|].+)+[|]?$")) {
+                mustAppendPreviousLine = true;
+                mayBeTable = true;
+            } else {
+                mustAppendPreviousLine = true;
+                mayBeTable = false;
+            }
+        } else if (line.matches("^[|]?.+([|].+)+[|]?$")) {
+            if (getWeakBaliseIndex("table") == -1) {
+                mayBeTable = true;
+            } else {
+                line = computeTableLine(line);
+                return line;
+            }
+        }
+        line = closeWeakBalise(line, "table");
+
         // Unordered list
         var balise = "ul";
         if (line.matches("^[-*][\\s].+")) {
@@ -166,6 +221,24 @@ public abstract class MarkDownToHtmlConverter {
         line = closeWeakBalise(line, balise);
 
         hasComputedOneSingleLinedBalise = false;
+        return line;
+    }
+
+    private static String computeTableLine(String line) {
+        var sb = new StringBuilder();
+        line = line.replaceAll("^[|]|[|]$", "");
+
+        var parts = line.split("[|]");
+        sb.append("<tr>\n");
+        for (var part : parts) {
+            sb.append("<td>");
+            sb.append(part);
+            sb.append("</td>\n");
+        }
+        sb.append("</tr>");
+
+        line = sb.toString();
+
         return line;
     }
 

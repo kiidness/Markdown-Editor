@@ -74,7 +74,7 @@ public class FileEditorControl extends BorderPane {
                         codeArea.getCaretColumn(),
                         codeArea.getText(0, codeArea.getCaretPosition()).split("\n").length),
                         codeArea.caretPositionProperty()));
-        
+
         codeArea.replaceText(fileLoadedVM.getMarkDownText());
     }
 
