@@ -163,7 +163,7 @@ public abstract class MarkDownToHtmlConverter {
         // Table
         if (mayBeTable) {
             if (line.matches("^[|]?(\\s*)[-]+(\\s*)([|](\\s*)[-]+)+(\\s*)[|]?$")) {
-                previousLine.replaceAll("^[|]|[|]$", "");
+                previousLine = previousLine.replaceAll("^[|]|[|]$", "");
                 var partsHeader = previousLine.split("[|]");
                 var sb = new StringBuilder();
 
