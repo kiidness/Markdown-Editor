@@ -28,6 +28,7 @@ Markdown Editor is made with [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93
 [JAR and EXE available here](https://github.com/kiidness/Markdown-Editor/releases/download/1.0.0/markdown-editor-1.0.0.zip)
 
 # Releases
+- [1.1.8-beta](https://github.com/kiidness/Markdown-Editor/releases/tag/1.1.8-beta)
 - [1.0.0-beta](https://github.com/kiidness/Markdown-Editor/releases/tag/1.0.0)
 
 # License
