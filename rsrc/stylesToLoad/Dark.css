@@ -35,3 +35,26 @@ code, pre {
 img {
   max-width: 100%;
 }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 100%;
+  font: inherit;
+}
+
+table th {
+  font-weight: bold;
+  border: 1px solid #151515;
+  padding: 6px 13px;
+}
+
+table td {
+  border: 1px solid #151515;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #111;
+  background-color: #353535;
+}

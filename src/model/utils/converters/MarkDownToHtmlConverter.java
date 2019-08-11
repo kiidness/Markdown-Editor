@@ -181,7 +181,7 @@ public abstract class MarkDownToHtmlConverter {
                 mustIgnoreCurrentLine = true;
                 mayBeTable = false;
                 return line;
-            } else if (line.matches("^[|]?.+([|].+)+[|]?$")) {
+            } else if (line.matches("^[|]?.*([|].*)+[|]?$")) {
                 mustAppendPreviousLine = true;
                 mayBeTable = true;
             } else {
@@ -222,6 +222,23 @@ public abstract class MarkDownToHtmlConverter {
 
         hasComputedOneSingleLinedBalise = false;
         return line;
+    }
+
+    private static String computeIgnoredMarkdownBalise(String text, boolean mustBeEscaped) {
+        String preRegex = "";
+        if (mustBeEscaped) {
+            preRegex = "\\\\";
+        }
+        text = text.replaceAll(preRegex + "[|]", "&vert;");
+        text = text.replaceAll(preRegex + ">", "&gt;");
+        text = text.replaceAll(preRegex + "<", "&lt;");
+        text = text.replaceAll(preRegex + "[']", "&apos;");
+        text = text.replaceAll(preRegex + "[`]", "&#768;");
+        text = text.replaceAll(preRegex + "[~]", "&#771;");
+        text = text.replaceAll(preRegex + "[*]", "&#42;");
+        text = text.replaceAll(preRegex + "[_]", "&#95;");
+
+        return text;
     }
 
     private static String computeTableLine(String line) {
@@ -300,8 +317,8 @@ public abstract class MarkDownToHtmlConverter {
         var stringBuilder = new StringBuilder();
         for(var balise: openWeakBaliseStack) {
             stringBuilder.append(String.format("</%s>", balise));
-            //openWeakBaliseStack.remove(balise);
         }
+        openWeakBaliseStack.clear();
         stringBuilder.append(line);
         return stringBuilder.toString();
     }
@@ -311,8 +328,8 @@ public abstract class MarkDownToHtmlConverter {
 
         for(var balise: openStrongBaliseStack) {
             stringBuilder.append(String.format("</%s>", balise));
-            //openStrongBaliseStack.remove(balise);
         }
+        openStrongBaliseStack.clear();
         stringBuilder.append(line);
         return stringBuilder.toString();
     }
@@ -344,22 +361,19 @@ public abstract class MarkDownToHtmlConverter {
             StringBuilder stringBuilder = new StringBuilder();
             if ((!isCodeDefinedBeforeLine && balise.equals("code")) | (!isPreDefinedBeforeLine && balise.equals("pre"))) {
                 parts = line.split(String.format("<%s>", balise));
+                parts[0] = computeIgnoredMarkdownBalise(parts[0], true);
 
-                parts[0] = parts[0].replaceAll("\\\\>", "&gt");
-                parts[0] = parts[0].replaceAll("\\\\<", "&lt");
                 stringBuilder.append(parts[0]);
 
                 for (int i = 1; i < parts.length; i++) {
                     stringBuilder.append(String.format("<%s>", balise));
 
                     var subparts = parts[i].split(String.format("</%s>", balise));
-                    subparts[0] = subparts[0].replaceAll(">", "&gt");
-                    subparts[0] = subparts[0].replaceAll("<", "&lt");
+                    subparts[0] = computeIgnoredMarkdownBalise(subparts[0], false);
                     stringBuilder.append(subparts[0]);
 
                     if (subparts.length >= 2) {
-                        subparts[1] = subparts[1].replaceAll("\\\\>", "&gt");
-                        subparts[1] = subparts[1].replaceAll("\\\\<", "&lt");
+                        subparts[1] = computeIgnoredMarkdownBalise(subparts[1], true);
                         stringBuilder.append(String.format("</%s>", balise));
                         stringBuilder.append(subparts[1]);
                     }
@@ -367,21 +381,16 @@ public abstract class MarkDownToHtmlConverter {
             } else {
                 parts = line.split(String.format("</%s>", balise));
 
-                parts[0] = parts[0].replaceAll(">", "&gt");
-                parts[0] = parts[0].replaceAll("<", "&lt");
+                parts[0] = computeIgnoredMarkdownBalise(parts[0], false);
                 stringBuilder.append(parts[0]);
 
                 for (int i = 1; i < parts.length; i++) {
                     stringBuilder.append(String.format("</%s>", balise));
-
                     var subparts = parts[i].split(String.format("<%s>", balise));
-
-                    subparts[0] = subparts[0].replaceAll("\\\\>", "&gt");
-                    subparts[0] = subparts[0].replaceAll("\\\\<", "&lt");
+                    subparts[0] = computeIgnoredMarkdownBalise(subparts[0], true);
 
                     if (subparts.length >= 2) {
-                        subparts[1] = subparts[1].replaceAll(">", "&gt");
-                        subparts[1] = subparts[1].replaceAll("<", "&lt");
+                        subparts[1] = computeIgnoredMarkdownBalise(subparts[1], false);
 
                         stringBuilder.append(String.format("<%s>", balise));
                         stringBuilder.append(subparts[1]);

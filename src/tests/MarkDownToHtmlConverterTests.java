@@ -41,7 +41,7 @@ public class MarkDownToHtmlConverterTests {
     @Test
     public final void testBlockCode() {
         String markdown = "```<a>Test</a>\n<p>test 2</p>```";
-        String html = "<pre>&lta&gtTest&lt/a&gt\n&ltp&gttest 2&lt/p&gt</pre>";
+        String html = "<pre>&lt;a&gt;Test&lt;/a&gt;\n&lt;p&gt;test 2&lt;/p&gt;</pre>";
 
         var result = MarkDownToHtmlConverter.getConvertedBodyHtml(markdown);
 
